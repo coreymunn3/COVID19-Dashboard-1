@@ -64,7 +64,9 @@ const Chart = ({
 
   // show the bar chart if a country is selected, else show the line chart
   return (
-    <div className={styles.container}>{country ? barChart : lineChart}</div>
+    <div className={styles.container}>
+      {country === 'US' ? lineChart : barChart}
+    </div>
   );
 };
 

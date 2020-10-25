@@ -11,12 +11,12 @@ const App = () => {
   // hook to store data as app state
   const [covidDataTotals, setCovidDataTotals] = useState({});
   const [dailyData, setDailyData] = useState([]);
-  const [chosenCountry, setChosenCountry] = useState('');
+  const [chosenCountry, setChosenCountry] = useState('US');
   // make data request on render
   useEffect(() => {
     const fetchAPI = async () => {
       // get data for covidDataTotals
-      setCovidDataTotals(await fetchDataTotals());
+      setCovidDataTotals(await fetchDataTotals('US'));
       // get data for dailyData
       const daily = await fetchDataDaily();
       setDailyData(daily.reverse());
