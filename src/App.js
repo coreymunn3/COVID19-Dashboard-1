@@ -1,26 +1,48 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+// components
+import { Cards, Chart, CountryPicker } from './components';
+import styles from './App.module.css';
+// images
+import coronaImage from './img/image.png';
+// data fetching
+import { fetchDataTotals, fetchDataDaily } from './api/index';
 
-function App() {
+const App = () => {
+  // hook to store data as app state
+  const [covidDataTotals, setCovidDataTotals] = useState({});
+  const [dailyData, setDailyData] = useState([]);
+  const [chosenCountry, setChosenCountry] = useState('');
+  // make data request on render
+  useEffect(() => {
+    const fetchAPI = async () => {
+      // get data for covidDataTotals
+      setCovidDataTotals(await fetchDataTotals());
+      // get data for dailyData
+      const daily = await fetchDataDaily();
+      setDailyData(daily.reverse());
+    };
+    fetchAPI();
+  }, []);
+
+  const handleCountryChange = async (country) => {
+    // set country to state
+    setChosenCountry(country);
+    // fetch country-specific data & set to state
+    setCovidDataTotals(await fetchDataTotals(country));
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className={styles.container}>
+      <img className={styles.image} src={coronaImage} alt='COVID-19' />
+      <Cards dataTotals={covidDataTotals} country={chosenCountry} />
+      <CountryPicker handleCountryChange={handleCountryChange} />
+      <Chart
+        dailyData={dailyData}
+        dataTotals={covidDataTotals}
+        country={chosenCountry}
+      />
     </div>
   );
-}
+};
 
 export default App;
